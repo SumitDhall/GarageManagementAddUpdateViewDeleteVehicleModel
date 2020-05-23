@@ -3,16 +3,21 @@ package com.motors.gm.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.motors.gm.model.VehicleModel;
 import com.motors.gm.repository.VehicleModelAddUpdateViewDeleteRepository;
+import com.motors.gm.repository.VehicleModelAddUpdateViewDeleteRepositoryImpl;
 
 @Service
 public class VehicleModelAddUpdateViewDeleteServiceImpl implements VehicleModelAddUpdateViewDeleteService {
 
+	private static final Logger LOGGER = LogManager.getLogger(VehicleModelAddUpdateViewDeleteServiceImpl.class.getName());
+	
 	@Autowired
 	VehicleModelAddUpdateViewDeleteRepository vehicleModelAddUpdateViewRepository;
 
@@ -21,40 +26,40 @@ public class VehicleModelAddUpdateViewDeleteServiceImpl implements VehicleModelA
 
 	public void saveVehicle(VehicleModel vehicleModel) {
 		vehicleModelAddUpdateViewRepository.saveVehicle(vehicleModel);
-		System.out.println("Vehicle Repository to save new vehicle called");
+		LOGGER.info("Vehicle Repository to save new vehicle called");
 	}
 
 	@Override
 	public void updateVehicle(VehicleModel vehicleModel, String regNumber) {
 
 		vehicleModelAddUpdateViewRepository.updateVehicle(vehicleModel, regNumber);
-		System.out.println("Vehicle Repository to update vehicle called");
+		LOGGER.info("Vehicle Repository to update vehicle called");
 	}
 
 	@Override
 	public String deleteVehicle(String regNumber) {
-		System.out.println("Vehicle Repository to delete vehicle called");
+		LOGGER.info("Vehicle Repository to delete vehicle called");
 		return vehicleModelAddUpdateViewRepository.deleteVehicle(regNumber);
 	}
 
 	@Override
 	public List<VehicleModel> findAllVehicle() {
 
-		System.out.println("Vehicle view Repository to find all vehicle");
+		LOGGER.info("Vehicle view Repository to find all vehicle");
 		return vehicleModelAddUpdateViewRepository.findAllVehicle();
 	}
 
 	@Override
 	public List<VehicleModel> findVehicleByRegNumber(String regNumber) {
 
-		System.out.println("Vehicle view Repository to find all vehicle");
+		LOGGER.info("Vehicle view Repository to find all vehicle");
 		return vehicleModelAddUpdateViewRepository.findVehicleByRegNumber(regNumber);
 	}
 
 	@Override
 	public List<VehicleModel> findVehicleByFeaturesVehicleDetails(VehicleModel vehicleModel) {
 
-		System.out.println("Vehicle view Repository to find vehicle with features");
+		LOGGER.info("Vehicle view Repository to find vehicle with features");
 		
 //		List VehicleModelList = new ArrayList<VehicleModel>();
 //		if (vehicleModel.getMake() != null) {

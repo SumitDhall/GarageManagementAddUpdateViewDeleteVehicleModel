@@ -6,6 +6,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.motors.gm.garageManagementAUVD.GarageManagementAddUpdateViewDeleteApplication;
 import com.motors.gm.model.VehicleModel;
 import com.motors.gm.repository.VehicleModelAddUpdateViewDeleteRepository;
 import com.motors.gm.service.VehicleModelAddUpdateViewDeleteService;
@@ -26,6 +29,8 @@ import com.motors.gm.service.VehicleModelAddUpdateViewDeleteService;
 @RequestMapping(path = "/addUpdateViewAsset")
 @Validated
 public class VehicleModelAddUpdateViewDeleteController {
+
+	private static final Logger LOGGER = LogManager.getLogger(VehicleModelAddUpdateViewDeleteController.class.getName());
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -40,6 +45,7 @@ public class VehicleModelAddUpdateViewDeleteController {
 	//Annotation Based Validation: used @Valid annotation to validate if the request body has met all the validations put on the VehicleModel class
 	@PostMapping(path = "/addVehicle", produces = "application/json")
 	public String save(@Valid @RequestBody VehicleModel vehicleModel) {
+		LOGGER.info("Garage Management Add Vehicle Model Service");
 		vehicleModelAddUpdateViewService.saveVehicle(vehicleModel);
 		return "Save Success";
 	}
@@ -49,6 +55,7 @@ public class VehicleModelAddUpdateViewDeleteController {
 	//Used Annotation Validation for the path variables passed in (@NotEmpty, @NotBlank) using class javax.validation.constraints.NotBlank and NotEmpty
 	@PutMapping(path = "/updateVehicle/{regNumber}", produces = "application/json")
 	public String update(@RequestBody VehicleModel vehicleModel, @PathVariable @NotEmpty @NotBlank String regNumber) {
+		LOGGER.info("Garage Management Update Vehicle Model Service");
 		vehicleModelAddUpdateViewService.updateVehicle(vehicleModel, regNumber);
 		return "Update Success";
 	}
@@ -58,6 +65,7 @@ public class VehicleModelAddUpdateViewDeleteController {
 	//Used Annotation Validation for the path variables passed in (@NotEmpty, @NotBlank) using class javax.validation.constraints.NotBlank and NotEmpty
 	@DeleteMapping(path = "/deleteVehicle/{regNumber}", produces = "application/json")
 	public String deleteVehicle(@PathVariable @NotEmpty @NotBlank String regNumber) {
+		LOGGER.info("Garage Management Delete Vehicle Model Service");
 		return vehicleModelAddUpdateViewService.deleteVehicle(regNumber);
 	}
 
@@ -65,7 +73,8 @@ public class VehicleModelAddUpdateViewDeleteController {
 	// existing vehicles in DB
 	@GetMapping(path = "/findAllVehicle", produces = "application/json")
 	public List<VehicleModel> findAllVehicleDetails() {
-		System.out.println("Below are the all available cars: \n " + vehicleModelAddUpdateViewService.findAllVehicle());
+		LOGGER.info("Garage Management View All Vehicle Model Service");
+		LOGGER.debug("Below are the all available cars: \n " + vehicleModelAddUpdateViewService.findAllVehicle());
 		return vehicleModelAddUpdateViewService.findAllVehicle();
 	}
 
@@ -74,8 +83,9 @@ public class VehicleModelAddUpdateViewDeleteController {
 	// method to findVehicleByRegNumber in DB
 	@GetMapping(path = "/findVehicleByRegNumber/{regNumber}", produces = "application/json")
 	public List<VehicleModel> findByRegNumberVehicleDetails(@PathVariable @NotBlank @NotEmpty String regNumber) {
-		System.out.println("Below are the all available cars: \n "
-				+ vehicleModelAddUpdateViewService.findVehicleByRegNumber(regNumber));
+		LOGGER.info("Garage Management View Vehicle Model with Registration Number, Vehicle Model Service");
+//		LOGGER.debug("Below are the all available cars: \n "
+//				+ vehicleModelAddUpdateViewService.findVehicleByRegNumber(regNumber));
 		return vehicleModelAddUpdateViewService.findVehicleByRegNumber(regNumber);
 	}
 
@@ -83,8 +93,9 @@ public class VehicleModelAddUpdateViewDeleteController {
 	// method to findVehicleByFeatures provided by user in DB
 	@GetMapping(path = "/findVehicleByFeatures", produces = "application/json")
 	public List<VehicleModel> findVehicleByFeaturesVehicleDetails(@RequestBody VehicleModel vehicleModel) {
-		System.out.println("Below are the all available cars: \n "
-				+ vehicleModelAddUpdateViewService.findVehicleByFeaturesVehicleDetails(vehicleModel));
+		LOGGER.info("Garage Management View Vehicle Model with different features, Vehicle Model Service");
+//		LOGGER.debug("Below are the all available cars: \n "
+//				+ vehicleModelAddUpdateViewService.findVehicleByFeaturesVehicleDetails(vehicleModel));
 		return vehicleModelAddUpdateViewService.findVehicleByFeaturesVehicleDetails(vehicleModel);
 	}
 }

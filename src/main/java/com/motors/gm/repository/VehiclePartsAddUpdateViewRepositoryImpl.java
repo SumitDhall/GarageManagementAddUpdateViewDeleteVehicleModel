@@ -1,6 +1,8 @@
 
 package com.motors.gm.repository;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -15,6 +17,9 @@ import com.motors.gm.model.VehicleParts;
 @EnableMongoRepositories
 public class VehiclePartsAddUpdateViewRepositoryImpl implements VehiclePartsAddUpdateViewRepository {
 
+	private static final Logger LOGGER = LogManager.getLogger(VehiclePartsAddUpdateViewRepositoryImpl.class.getName());
+
+	
 	@Autowired
 	private MongoTemplate mongoTemplate;
 

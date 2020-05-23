@@ -3,6 +3,8 @@ package com.motors.gm.repository;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -11,18 +13,21 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Repository;
 
+import com.motors.gm.controller.VehicleModelAddUpdateViewDeleteController;
 import com.motors.gm.model.VehicleModel;
 
 @Repository
 @EnableMongoRepositories
 public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleModelAddUpdateViewDeleteRepository {
 
+	private static final Logger LOGGER = LogManager.getLogger(VehicleModelAddUpdateViewDeleteRepositoryImpl.class.getName());
+	
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@Override
 	public String saveVehicle(VehicleModel vehicleModel) {
-		System.out.println("saveVehicleApacheKafka method call");
+		LOGGER.info("saveVehicleApacheKafka method call");
 		return saveVehicleApacheKafka(vehicleModel);
 		// mongoTemplate.insert(vehicleModel);
 		// return "Vehicle Saved Successfully";
@@ -30,7 +35,7 @@ public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleMod
 
 	public String saveVehicleApacheKafka(VehicleModel vehicleModel) {
 		mongoTemplate.insert(vehicleModel);
-		System.out.println("Vehicle Record is saved in DB");
+		LOGGER.info("Vehicle Record is saved in DB");
 		return "Vehicle Saved Successfully";
 	}
 
@@ -105,26 +110,26 @@ public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleMod
 	@Override
 	public List<VehicleModel> findAllVehicle() {
 
-		System.out.println("Retrieving all vehicles available");
+		LOGGER.info("Retrieving all vehicles available");
 		return findAllVehicleApacheKafka();
 	}
 
 	public List<VehicleModel> findAllVehicleApacheKafka() {
 
-		System.out.println("Retrieving all vehicles available");
+		LOGGER.info("Retrieving all vehicles available");
 		return mongoTemplate.findAll(VehicleModel.class);
 	}
 
 	@Override
 	public List<VehicleModel> findVehicleByRegNumber(String regNumber) {
 
-		System.out.println("Retrieving RegNumber vehicles available");
+		LOGGER.info("Retrieving RegNumber vehicles available");
 		return findVehicleByRegNumberApacheKafka(regNumber);
 	}
 
 	public List<VehicleModel> findVehicleByRegNumberApacheKafka(String regNumber) {
 
-		System.out.println("Retrieving all vehicles available");
+		LOGGER.info("Retrieving all vehicles available");
 		Query query = new Query();
 		query.addCriteria(Criteria.where("regNumber").is(regNumber));
 		return mongoTemplate.find(query, VehicleModel.class);
@@ -143,13 +148,13 @@ public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleMod
 	@Override
 	public List<VehicleModel> findVehicleByFeaturesVehicleDetails(VehicleModel vehicleModel) {
 
-		System.out.println("Retrieving vehicles with features available");
+		LOGGER.info("Retrieving vehicles with features available");
 		return findVehicleByFeaturesVehicleDetailsApacheKafka(vehicleModel);
 	}
 
 	public List<VehicleModel> findVehicleByFeaturesVehicleDetailsApacheKafka(VehicleModel vehicleModel) {
 
-		System.out.println("Retrieving all vehicles available");
+		LOGGER.info("Retrieving all vehicles available");
 		Query query = new Query();
 		List<VehicleModel> resultset = null;
 		Criteria criteria = new Criteria();

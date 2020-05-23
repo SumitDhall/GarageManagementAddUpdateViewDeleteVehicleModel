@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @SpringBootApplication
 @ComponentScan({"com.motors.gm"})
@@ -13,19 +15,12 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories("com.motors.gm")
 public class GarageManagementAddUpdateViewDeleteApplication extends SpringBootServletInitializer{
 
+	private static final Logger LOGGER = LogManager.getLogger(GarageManagementAddUpdateViewDeleteApplication.class.getName());
 	
 	public static void main(String[] args) {
 		SpringApplication.run(GarageManagementAddUpdateViewDeleteApplication.class, args);
-		System.out.println("Garage Management Add Update Delete Rest API");
+		LOGGER.debug("Garage Management Add Update View Delete Vehicle Model Rest API Service");
 		
-		/*TestModel testModel = new TestModel();
-		testModel.setfName("Sum");
-		testModel.setlName("Dhall");
-		
-		//VehicleAUDServiceImpl vehicleAUDServiceImpl = new VehicleAUDServiceImpl();
-		@Autowired
-		VehicleAUDRepository vehicleAUDRepository;// = new VehicleAUDRepositoryImpl();
-		vehicleAUDRepository.saveVehicle(testModel);*/
 	}
 
 }

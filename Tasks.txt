@@ -1,0 +1,19 @@
+Java
+Spring Boot
+Spring Security
+Spring Rest Services
+Apache Kafka
+Docker & Kubernets
+------------------------------
+
+1) Data Validation - No If Else - use Annotation based validation in API.
+Mandatory and optional validation of values and then process the data.
+Add, Update, View --
+Delete -- 
+
+Divide below in 4 different projects:
+a) Vehicle Service merge add 4 CRUD operation.
+b) Asset(Parts)  - Service merge add 4 CRUD operation. Add, update, Delete & View
+c) Maintenance Service - Work done on this vehicle.
+d) Financial Service - Final Billing - Salary
+e) TimeSheet Service - Reg No: Amount of work and details - Timesheet
