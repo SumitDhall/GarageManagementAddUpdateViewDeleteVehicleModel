@@ -11,8 +11,8 @@
 	<groupId>com.motors.gm</groupId>
 	<artifactId>GMAddUpdateView</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>GMAddUpdateView</name>
-	<description>Demo project for Spring Boot</description>
+	<name>GarageManagementAddUpdateViewDeleteVehicleModel</name>
+	<description>GarageManagement Add Update View Delete VehicleModel Rest API Service</description>
 
 	<properties>
 		<java.version>1.8</java.version>
