@@ -1,0 +1,31 @@
+ Add vehicle Parts Requests:
+ 
+ http://localhost:8080/audAsset/addVehicle
+ {
+ 	"regNumber": "VehicleParts2",
+ 	"engineParts": ["cylinder", "cranks"],
+ 	"bodyParts":["Front Bumper"],
+ 	"interiorParts":["Seat Covers"],
+ 	"luxuryParts":["NOS"]
+ }
+ ------------------------------------------------------------
+ Add Vehicle Model JSON Request:
+     {
+        "regNumber": "Test3",
+        "make": "BMW",
+        "model": "MMMM Class",
+        "modelVariant": "318 d",
+        "fuelType": "P",
+        "numberOfDoors": 4,
+        "engineSize": 2,
+        "milage": 150000.0,
+        "annualTax": 30,
+        "co2Emission": 1.02,
+        "colour": "Blue",
+        "bodyType": "Saloon",
+        "fuelConsumption": 40.0,
+        "insuranceGroup": "A",
+        "buyPrice": 6000.0,
+        "salePrice": 8000.0,
+        "gearBox": "Man"
+    }
