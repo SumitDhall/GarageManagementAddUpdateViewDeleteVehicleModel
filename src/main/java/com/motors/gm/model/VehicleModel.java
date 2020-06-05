@@ -1,20 +1,25 @@
 package com.motors.gm.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import com.mongodb.lang.NonNull;
-import com.motors.gm.garageManagementAUVD.GarageManagementAddUpdateViewDeleteApplication;
 
-@Document("vehicleModel")
+@Document(collection = "vehicleModel")
 public class VehicleModel {
 	
 	private static final Logger LOGGER = LogManager.getLogger(VehicleModel.class.getName());
+	
+	
+	// TO_DO convert the ID into UUID
+	//@Id
+    //@GeneratedValue(strategy=GenerationType.IDENTITY)
+    //@Column(name = "id", updatable = false, nullable = false)
+	//private Long id;
 	
 	@Id
 	@NotEmpty(message="Please provide the Car Registration Number")

@@ -1,6 +1,5 @@
 package com.motors.gm.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import com.motors.gm.exception.ActorNotFoundException;
 import com.motors.gm.model.VehicleModel;
 import com.motors.gm.repository.VehicleModelAddUpdateViewDeleteRepository;
-import com.motors.gm.repository.VehicleModelAddUpdateViewDeleteRepositoryImpl;
 
 @Service
 public class VehicleModelAddUpdateViewDeleteServiceImpl implements VehicleModelAddUpdateViewDeleteService {
@@ -24,13 +23,14 @@ public class VehicleModelAddUpdateViewDeleteServiceImpl implements VehicleModelA
 	@Autowired
 	MongoTemplate mongoTemplate;
 
-	public void saveVehicle(VehicleModel vehicleModel) {
-		vehicleModelAddUpdateViewRepository.saveVehicle(vehicleModel);
+	public String saveVehicle(VehicleModel vehicleModel) {
+		String result = vehicleModelAddUpdateViewRepository.saveVehicle(vehicleModel);
 		LOGGER.info("Vehicle Repository to save new vehicle called");
+		return result;
 	}
 
 	@Override
-	public void updateVehicle(VehicleModel vehicleModel, String regNumber) {
+	public void updateVehicle(VehicleModel vehicleModel, String regNumber) throws ActorNotFoundException {
 
 		vehicleModelAddUpdateViewRepository.updateVehicle(vehicleModel, regNumber);
 		LOGGER.info("Vehicle Repository to update vehicle called");
@@ -50,7 +50,7 @@ public class VehicleModelAddUpdateViewDeleteServiceImpl implements VehicleModelA
 	}
 
 	@Override
-	public List<VehicleModel> findVehicleByRegNumber(String regNumber) {
+	public List<VehicleModel> findVehicleByRegNumber(String regNumber){
 
 		LOGGER.info("Vehicle view Repository to find all vehicle");
 		return vehicleModelAddUpdateViewRepository.findVehicleByRegNumber(regNumber);

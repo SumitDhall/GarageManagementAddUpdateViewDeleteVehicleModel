@@ -10,6 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +22,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.motors.gm.garageManagementAUVD.GarageManagementAddUpdateViewDeleteApplication;
+import com.motors.gm.exception.ActorNotFoundException;
 import com.motors.gm.model.VehicleModel;
-import com.motors.gm.repository.VehicleModelAddUpdateViewDeleteRepository;
 import com.motors.gm.service.VehicleModelAddUpdateViewDeleteService;
 
 @RestController
@@ -31,7 +34,8 @@ import com.motors.gm.service.VehicleModelAddUpdateViewDeleteService;
 public class VehicleModelAddUpdateViewDeleteController {
 
 	private static final Logger LOGGER = LogManager.getLogger(VehicleModelAddUpdateViewDeleteController.class.getName());
-
+	List<VehicleModel> vehicleModelResult = null;
+	
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -44,10 +48,17 @@ public class VehicleModelAddUpdateViewDeleteController {
 	// Save method will call service save method to add new vehicle into DB
 	//Annotation Based Validation: used @Valid annotation to validate if the request body has met all the validations put on the VehicleModel class
 	@PostMapping(path = "/addVehicle", produces = "application/json")
-	public String save(@Valid @RequestBody VehicleModel vehicleModel) {
+	public ResponseEntity<VehicleModel> save(@Valid @RequestBody VehicleModel vehicleModel) {
 		LOGGER.info("Garage Management Add Vehicle Model Service");
-		vehicleModelAddUpdateViewService.saveVehicle(vehicleModel);
-		return "Save Success";
+		 String result = vehicleModelAddUpdateViewService.saveVehicle(vehicleModel);
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("saveVehicle", "saved");
+		if(result.equalsIgnoreCase("Saved")){
+			return new ResponseEntity<>(HttpStatus.CREATED); //"Save Success";
+		}else{
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
 	}
 
 	// update method will call service update method to update the existing
@@ -56,7 +67,15 @@ public class VehicleModelAddUpdateViewDeleteController {
 	@PutMapping(path = "/updateVehicle/{regNumber}", produces = "application/json")
 	public String update(@RequestBody VehicleModel vehicleModel, @PathVariable @NotEmpty @NotBlank String regNumber) {
 		LOGGER.info("Garage Management Update Vehicle Model Service");
-		vehicleModelAddUpdateViewService.updateVehicle(vehicleModel, regNumber);
+		
+		// TO_DO Send the response entity body - 27/05/2020
+		//Send Return message format - Code/message using HTTP - Apply HTTP code where default codes are present.
+		//Custom Error CE_1289
+		
+		try{vehicleModelAddUpdateViewService.updateVehicle(vehicleModel, regNumber);
+		}catch (ActorNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle Not Found", ex);
+        }
 		return "Update Success";
 	}
 
@@ -64,9 +83,14 @@ public class VehicleModelAddUpdateViewDeleteController {
 	// vehicle in DB
 	//Used Annotation Validation for the path variables passed in (@NotEmpty, @NotBlank) using class javax.validation.constraints.NotBlank and NotEmpty
 	@DeleteMapping(path = "/deleteVehicle/{regNumber}", produces = "application/json")
-	public String deleteVehicle(@PathVariable @NotEmpty @NotBlank String regNumber) {
+	public ResponseEntity<String> deleteVehicle(@PathVariable @NotEmpty @NotBlank String regNumber) {
 		LOGGER.info("Garage Management Delete Vehicle Model Service");
-		return vehicleModelAddUpdateViewService.deleteVehicle(regNumber);
+		try{ vehicleModelAddUpdateViewService.deleteVehicle(regNumber);
+		}catch (ActorNotFoundException ex) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Actor Not Found", ex);
+	    }
+		//return new ResponseEntity<VehicleModel>("", HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body("Deleted Successfully!!");
 	}
 
 	// findAllVehicle method will call service findAllVehicle method to findAll
@@ -82,11 +106,16 @@ public class VehicleModelAddUpdateViewDeleteController {
 	//Used Annotation Validation for the path variables passed in (@NotEmpty, @NotBlank) using class javax.validation.constraints.NotBlank and NotEmpty
 	// method to findVehicleByRegNumber in DB
 	@GetMapping(path = "/findVehicleByRegNumber/{regNumber}", produces = "application/json")
-	public List<VehicleModel> findByRegNumberVehicleDetails(@PathVariable @NotBlank @NotEmpty String regNumber) {
+	public ResponseEntity<List<VehicleModel>> findByRegNumberVehicleDetails(@PathVariable @NotBlank @NotEmpty String regNumber) {
 		LOGGER.info("Garage Management View Vehicle Model with Registration Number, Vehicle Model Service");
 //		LOGGER.debug("Below are the all available cars: \n "
 //				+ vehicleModelAddUpdateViewService.findVehicleByRegNumber(regNumber));
-		return vehicleModelAddUpdateViewService.findVehicleByRegNumber(regNumber);
+		
+		try{ vehicleModelResult = vehicleModelAddUpdateViewService.findVehicleByRegNumber(regNumber);
+	}catch (ActorNotFoundException ex) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Actor Not Found", ex);
+    }
+		return new ResponseEntity<>(vehicleModelResult, HttpStatus.OK );
 	}
 
 	// findVehicleByFeatures method will call service findVehicleByFeatures

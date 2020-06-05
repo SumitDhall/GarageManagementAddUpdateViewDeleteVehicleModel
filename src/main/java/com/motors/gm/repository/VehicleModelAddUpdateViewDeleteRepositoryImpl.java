@@ -1,7 +1,6 @@
 package com.motors.gm.repository;
 
 import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,17 +10,22 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.motors.gm.controller.VehicleModelAddUpdateViewDeleteController;
+import com.mongodb.client.result.DeleteResult;
+import com.motors.gm.exception.ActorNotFoundException;
 import com.motors.gm.model.VehicleModel;
+import org.springframework.dao.DuplicateKeyException;
 
 @Repository
 @EnableMongoRepositories
 public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleModelAddUpdateViewDeleteRepository {
 
-	private static final Logger LOGGER = LogManager.getLogger(VehicleModelAddUpdateViewDeleteRepositoryImpl.class.getName());
-	
+	private static final Logger LOGGER = LogManager
+			.getLogger(VehicleModelAddUpdateViewDeleteRepositoryImpl.class.getName());
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -34,12 +38,19 @@ public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleMod
 	}
 
 	public String saveVehicleApacheKafka(VehicleModel vehicleModel) {
-		mongoTemplate.insert(vehicleModel);
+		try {
+			mongoTemplate.insert(vehicleModel);
+		} catch (DuplicateKeyException e) {
+			LOGGER.error("Duplicate ID error while saving the vehicle into DB");
+			return e.getMessage();
+
+		}
 		LOGGER.info("Vehicle Record is saved in DB");
-		return "Vehicle Saved Successfully";
+
+		return "Saved";
 	}
 
-	public VehicleModel updateVehicle(VehicleModel vehicleModel, String regNumber) {
+	public VehicleModel updateVehicle(VehicleModel vehicleModel, String regNumber) throws ActorNotFoundException {
 		// Query updateQuery = new Query();
 		// updateQuery.addCriteria(Criteria.where("regNumber").is(regNumber));
 		// Update update = new Update();
@@ -50,7 +61,8 @@ public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleMod
 
 	}
 
-	public VehicleModel updateVehicleApacheKafka(VehicleModel vehicleModel, String regNumber) {
+	public VehicleModel updateVehicleApacheKafka(VehicleModel vehicleModel, String regNumber)
+			throws ActorNotFoundException {
 		Query updateQuery = new Query();
 		updateQuery.addCriteria(Criteria.where("regNumber").is(regNumber));
 		Update update = new Update();
@@ -129,21 +141,17 @@ public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleMod
 
 	public List<VehicleModel> findVehicleByRegNumberApacheKafka(String regNumber) {
 
-		LOGGER.info("Retrieving all vehicles available");
+		LOGGER.info("Retrieving vehicles with registration number");
 		Query query = new Query();
 		query.addCriteria(Criteria.where("regNumber").is(regNumber));
-		return mongoTemplate.find(query, VehicleModel.class);
+		List<VehicleModel> vehicleModelResult = mongoTemplate.find(query, VehicleModel.class);
+		if (null == vehicleModelResult || vehicleModelResult.isEmpty()) {
+			// throw new ActorNotFoundException("Id not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Not Found");
+		} else {
+			return vehicleModelResult;
+		}
 	}
-
-	// @Override
-	// public List<VehicleModel>
-	// findVehicleByFeaturesVehicleDetails(VehicleModel vehicleModel) {
-	// // TODO Auto-generated method stub
-	// // TODO - Implement this method
-	// return null;
-	// }
-
-	// TODO - Implement this method
 
 	@Override
 	public List<VehicleModel> findVehicleByFeaturesVehicleDetails(VehicleModel vehicleModel) {
@@ -255,10 +263,21 @@ public class VehicleModelAddUpdateViewDeleteRepositoryImpl implements VehicleMod
 	}
 
 	public String deleteVehicleApacheKafka(String regNumber) {
+		VehicleModel vehicleDeleteResult = null;
 		Query deleteQuery = new Query();
 		deleteQuery.addCriteria(Criteria.where("regNumber").is(regNumber));
-		mongoTemplate.remove(deleteQuery, VehicleModel.class);
-		return "Vehicle Deleted successfully from DB";
+		try {
+			vehicleDeleteResult = mongoTemplate.findAndRemove(deleteQuery, VehicleModel.class);
+		} catch (ActorNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle Not Found for deletion", ex);
+		}
+		if (null == vehicleDeleteResult || "".equals(vehicleDeleteResult)) {
+			// throw new ActorNotFoundException("Id not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle Not Found for deletion");
+		} else {
+
+			return "Vehicle Deleted successfully from DB";
+		}
 
 	}
 }
