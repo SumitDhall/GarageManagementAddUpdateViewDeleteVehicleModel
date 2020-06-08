@@ -1,0 +1,85 @@
+{
+  "regNumber":{
+    "registration":"SH57 XUV"
+  },	 
+  
+  "make":"Nissan",
+  
+  "model":"Qashqai",
+  
+  "modelVariant": "Economy",
+  
+  "fuelType":"diesel",
+      
+  "numberOfDoors":"2",
+  
+  "engineSize":"",
+  
+  "mileage":{
+    "milesDriven":"108988"
+  },
+  
+  "co2Emission":"upto100g/km",
+    
+  "colour":{
+    "metallic":"",
+    "paintColour":""
+  },
+  
+  "bodyType":"convertible",
+    
+  "gearBox":"automatic",
+  
+  "fuelConsumption":"perGallon50Plus",
+      
+  "insuranceGroup":{
+    "group_10":"",
+    "group_20":"",
+    "group_30":"",
+    "group_40":""
+  },
+  
+  "chasisNumber":"CHANMEPUHOSW-12345",
+  
+  "price":{
+    "finance": {
+      "minPrice": "1000",
+  	  "maxPrice": "9000",
+  	  "deposit": "900",
+      "term":"24",
+  	  "mileage":"20000"
+    },
+	"cash":{
+        "minPrice":"1000",
+        "maxPrice":"9000"
+             }
+  		},
+  
+  "year":{
+    "selectyear":{
+      "minYear":"",
+      "maxYear":""
+    },
+    "brandNew":"True"   	
+  },
+  
+  "acceleration":"sec12plus",
+  
+  "tax":{
+  "annualPrice":"",
+  "monthlyPrice":"",
+  "quartlyPrice":""
+	},
+  
+  "drivetrain":"fourWheelDrive",
+   
+  "ulez":"",
+  
+  "cat":"includesS/C/D/N",
+  
+  "seatCapacity":"",
+  
+  "modifiedVehicle":"N"
+    
+}
+------------------------------------------------------------------
