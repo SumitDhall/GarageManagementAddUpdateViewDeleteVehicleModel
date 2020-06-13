@@ -1,8 +1,8 @@
 package com.motors.gm.controller;
 
 import java.util.List;
+import java.util.Optional;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,11 +20,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.motors.gm.exception.ActorNotFoundException;
 import com.motors.gm.model.VehicleModel;
+import com.motors.gm.repository.VehicleModelRepositoryInterface;
 import com.motors.gm.service.VehicleModelAddUpdateViewDeleteService;
 
 @RestController
@@ -42,24 +43,42 @@ public class VehicleModelAddUpdateViewDeleteController {
 	@Autowired
 	VehicleModelAddUpdateViewDeleteService vehicleModelAddUpdateViewService;
 
+	@Autowired
+	VehicleModelRepositoryInterface vehicleModelRepositoryInterface;
+	//Below code for RBCA
+	 @RequestMapping(method=RequestMethod.POST, value="/addVehicleRBCA")
+	    public String save(@RequestBody VehicleModel vehicleModel) {
+		 vehicleModelRepositoryInterface.save(vehicleModel);
+
+	        return vehicleModel.getRegNumber();
+	    }
+	//Below code for RBCA
+	 @RequestMapping(method=RequestMethod.DELETE, value="/deleteVehicleRBCA/{regNumber}")
+	    public String delete(@PathVariable String regNumber) {
+	        Optional<VehicleModel> vehicleModel = vehicleModelRepositoryInterface.findById(regNumber);
+	        vehicleModelRepositoryInterface.delete(vehicleModel.get());
+
+	        return "product deleted";
+	    }
+	
 	// @Autowired
 	// VehicleAddUpdateViewRepository vehicleAddUpdateViewRepository;
 
 	// Save method will call service save method to add new vehicle into DB
 	//Annotation Based Validation: used @Valid annotation to validate if the request body has met all the validations put on the VehicleModel class
 	@PostMapping(path = "/addVehicle", produces = "application/json")
-	public ResponseEntity<VehicleModel> save(@Valid @RequestBody VehicleModel vehicleModel) {
-		LOGGER.info("Garage Management Add Vehicle Model Service");
-		 String result = vehicleModelAddUpdateViewService.saveVehicle(vehicleModel);
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("saveVehicle", "saved");
-		if(result.equalsIgnoreCase("Saved")){
-			return new ResponseEntity<>(HttpStatus.CREATED); //"Save Success";
-		}else{
-			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-		}
-	}
+//	public ResponseEntity<VehicleModel> save(@Valid @RequestBody VehicleModel vehicleModel) {
+//		LOGGER.info("Garage Management Add Vehicle Model Service");
+//		 String result = vehicleModelAddUpdateViewService.saveVehicle(vehicleModel);
+//		
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.add("saveVehicle", "saved");
+//		if(result.equalsIgnoreCase("Saved")){
+//			return new ResponseEntity<>(HttpStatus.CREATED); //"Save Success";
+//		}else{
+//			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//		}
+//	}
 
 	// update method will call service update method to update the existing
 	// vehicle in DB

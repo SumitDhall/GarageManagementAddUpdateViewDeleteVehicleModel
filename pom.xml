@@ -39,9 +39,22 @@
 			<version>2.6.1</version>
 		</dependency>
 
+		<!-- to implement security in a spring boot application. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		<!-- <dependency> <groupId>com.jayway.jsonpath</groupId> <artifactId>json-path</artifactId> 
 			INO-MVN-MAN-VER$ </dependency> <dependency> <groupId>com.github.opendevl</groupId> 
 			<artifactId>json2flat</artifactId> <version>1.0.3</version> </dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 
 
 		<dependency>
